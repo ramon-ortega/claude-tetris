@@ -31,9 +31,10 @@ Scoring: `LINE_SCORES[cleared] * level`, plus 2/cell for hard drop and 1/row for
 
 ## Cross-file coupling
 
-- Canvas dimensions are hardcoded in `index.html` (`board` = 300×600, `next-canvas` = 120×120). Changing `COLS`, `ROWS`, or `BLOCK` in `game.js` requires updating the `width`/`height` attributes to match `COLS*BLOCK` × `ROWS*BLOCK`. `drawNext()` also assumes a 4×4 grid at 30px.
-- `game.js` grabs DOM nodes by id at script load: `board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`. Renaming an id in the HTML breaks the script silently at load.
+- Canvas dimensions are hardcoded in `index.html` (`board` = 300×600, `next-canvas` = 120×120, `title-canvas` = 300×60). Changing `COLS`, `ROWS`, or `BLOCK` in `game.js` requires updating the `width`/`height` attributes to match `COLS*BLOCK` × `ROWS*BLOCK`. `drawNext()` also assumes a 4×4 grid at 30px; `drawTitle()` assumes a 300×60 canvas at 12px blocks (25×5 grid).
+- `game.js` grabs DOM nodes by id at script load: `board`, `next-canvas`, `title-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`. Renaming an id in the HTML breaks the script silently at load.
 - The overlay is toggled purely via the `.hidden` class in `style.css`.
+- The title (`#title-canvas`, `.game-title`) is rendered as tetromino-style blocks via `drawTitle()`, reusing `COLORS` and `drawBlock()`, instead of being plain text. It's a static image drawn once at load, not part of the per-frame render loop. `.game-title` is a block-level child of `.wrapper` placed *before* `.game-container`, with `width: 300px` matching `#board` so it left-aligns over the board rather than centering over the wider board+panel row — do not restore `text-align: center` on it. The `#overlay` lives inside `.game-container` (not `.wrapper`) specifically so it only covers the board+panel area, not the title.
 
 ## Language
 

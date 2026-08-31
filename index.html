@@ -7,8 +7,8 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1 class="game-title">TETRIS</h1>
   <div class="wrapper">
+    <canvas id="title-canvas" class="game-title" width="300" height="60" aria-label="TETRIS"></canvas>
     <div class="game-container">
       <canvas id="board" width="300" height="600"></canvas>
 
@@ -42,13 +42,13 @@
           </ul>
         </div>
       </aside>
-    </div>
 
-    <div id="overlay" class="overlay hidden">
-      <div class="overlay-box">
-        <p id="overlay-title">GAME OVER</p>
-        <p id="overlay-score"></p>
-        <button id="restart-btn">Reiniciar</button>
+      <div id="overlay" class="overlay hidden">
+        <div class="overlay-box">
+          <p id="overlay-title">GAME OVER</p>
+          <p id="overlay-score"></p>
+          <button id="restart-btn">Reiniciar</button>
+        </div>
       </div>
     </div>
   </div>

@@ -28,10 +28,25 @@ const PIECES = [
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
+// Bitmaps 3x5 de las letras de "TETRIS", reutilizados para dibujar el
+// título con bloques de color en vez de texto. La R no es un tetrominó
+// puro (imposible con piezas reales); esta es una aproximación legible,
+// como autoriza el issue #4.
+const TITLE_LETTERS = {
+  T: [[1,1,1],[0,1,0],[0,1,0],[0,1,0],[0,1,0]],
+  E: [[1,1,1],[1,0,0],[1,1,1],[1,0,0],[1,1,1]],
+  R: [[1,1,1],[1,0,1],[1,1,1],[1,1,0],[1,0,1]],
+  I: [[1,1,1],[0,1,0],[0,1,0],[0,1,0],[1,1,1]],
+  S: [[1,1,1],[1,0,0],[1,1,1],[0,0,1],[1,1,1]],
+};
+const TITLE_WORD = ['T', 'E', 'T', 'R', 'I', 'S'];
+
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
 const nextCtx = nextCanvas.getContext('2d');
+const titleCanvas = document.getElementById('title-canvas');
+const titleCtx = titleCanvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const linesEl = document.getElementById('lines');
 const levelEl = document.getElementById('level');
@@ -218,6 +233,26 @@ function drawNext() {
       drawBlock(nextCtx, offX + c, offY + r, shape[r][c], NB);
 }
 
+function drawTitle() {
+  const TB = 12; // tamaño de bloque del título, menor que BLOCK del tablero
+  const GAP = 1; // columnas de separación entre letras
+  const gridCols = titleCanvas.width / TB;
+  const gridRows = titleCanvas.height / TB;
+  const totalCols = TITLE_WORD.reduce((sum, ch) => sum + TITLE_LETTERS[ch][0].length, 0) + GAP * (TITLE_WORD.length - 1);
+  let col = Math.floor((gridCols - totalCols) / 2);
+  const offsetY = Math.floor((gridRows - 5) / 2);
+
+  titleCtx.clearRect(0, 0, titleCanvas.width, titleCanvas.height);
+  TITLE_WORD.forEach((ch, i) => {
+    const glyph = TITLE_LETTERS[ch];
+    const colorIndex = (i % 7) + 1; // cicla la paleta de COLORS por letra
+    for (let r = 0; r < glyph.length; r++)
+      for (let c = 0; c < glyph[r].length; c++)
+        if (glyph[r][c]) drawBlock(titleCtx, col + c, offsetY + r, colorIndex, TB);
+    col += glyph[0].length + GAP;
+  });
+}
+
 function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
@@ -301,4 +336,5 @@ document.addEventListener('keydown', e => {
 
 restartBtn.addEventListener('click', init);
 
+drawTitle();
 init();

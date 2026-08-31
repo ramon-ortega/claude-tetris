@@ -21,15 +21,13 @@ body {
 }
 
 .game-title {
-  text-align: center;
-  font-size: 28px;
-  font-weight: 800;
-  letter-spacing: 8px;
-  color: #7aa2f7;
+  display: block;
+  width: 300px;
   margin-bottom: 16px;
 }
 
 .game-container {
+  position: relative;
   display: flex;
   gap: 20px;
   align-items: flex-start;

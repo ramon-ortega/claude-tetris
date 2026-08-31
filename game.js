@@ -305,6 +305,10 @@ function loop(ts) {
     }
   }
   draw();
+  // No reprogramar si el estado cambió durante este frame: lockPiece() puede
+  // terminar la partida, y el cancelAnimationFrame() de endGame() no sirve
+  // aquí porque animId es el frame en curso, no uno pendiente.
+  if (gameOver || paused) return;
   animId = requestAnimationFrame(loop);
 }
 

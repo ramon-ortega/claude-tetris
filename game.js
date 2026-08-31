@@ -28,6 +28,9 @@ const PIECES = [
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
+const THEME_STORAGE_KEY = 'tetris-theme';
+const GRID_COLORS = { dark: '#22222e', light: '#d0d0dc' };
+
 // Bitmaps 3x5 de las letras de "TETRIS", reutilizados para dibujar el
 // título con bloques de color en vez de texto. La R no es un tetrominó
 // puro (imposible con piezas reales); esta es una aproximación legible,
@@ -54,8 +57,10 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const themeToggleBtn = document.getElementById('theme-toggle');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let theme;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -184,7 +189,7 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
 }
 
 function drawGrid() {
-  ctx.strokeStyle = '#22222e';
+  ctx.strokeStyle = GRID_COLORS[theme];
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -251,6 +256,18 @@ function drawTitle() {
         if (glyph[r][c]) drawBlock(titleCtx, col + c, offsetY + r, colorIndex, TB);
     col += glyph[0].length + GAP;
   });
+}
+
+function applyTheme(newTheme) {
+  theme = newTheme;
+  document.documentElement.dataset.theme = theme;
+  themeToggleBtn.textContent = theme === 'light' ? '☀️' : '🌙';
+  localStorage.setItem(THEME_STORAGE_KEY, theme);
+  draw();
+}
+
+function toggleTheme() {
+  applyTheme(theme === 'light' ? 'dark' : 'light');
 }
 
 function endGame() {
@@ -335,6 +352,8 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+themeToggleBtn.addEventListener('click', toggleTheme);
 
 drawTitle();
 init();
+applyTheme(localStorage.getItem(THEME_STORAGE_KEY) === 'light' ? 'light' : 'dark');
